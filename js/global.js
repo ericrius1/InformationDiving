@@ -20,12 +20,24 @@ G.h = window.innerHeight;
 G.position = new THREE.Vector3()
 G.windowSize = new THREE.Vector2(G.w, G.h);
 G.camera = new THREE.PerspectiveCamera(45, G.w/G.h, 1, 10000);
-G.camera.position.z = 100
+G.camera.position.z = 50
 G.scene = new THREE.Scene();
 G.renderer = new THREE.WebGLRenderer();
 G.clock = new THREE.Clock();
+G.controls = new THREE.OrbitControls(G.camera);
+G.stats = new Stats();
+G.rf = THREE.Math.randFloat;
+
+// Align top-left
+G.stats.domElement.style.position = 'absolute';
+G.stats.domElement.style.left = '0px';
+G.stats.domElement.style.top = '0px';
+
+document.body.appendChild( G.stats.domElement );
 
 G.container = document.getElementById('container');
+
+G.lines = new Lines()
 
 G.dT    =   { type: 'f', value: 0 }  
 G.timer =   { type: 'f', value: 0 }                         
@@ -34,22 +46,23 @@ G.dpr   =   {type: 'f', value: window.devicePixelRatio || 1 }
 G.renderer.setSize(G.w, G.h);
 G.container.appendChild(G.renderer.domElement)
 
-G.textChunk = [ 'This is a test bitches'].join('\n');
 
 G.startArray = [];
 
 G.init = function(){
 
+
+
   this.text = new TextParticles({
     vertexShader: this.shaders.vs.text,
     fragmentShader: this.shaders.fs.text,
-    lineLength: 60
+    lineLength: 120,
+    lineHeight: 2,
+    letterWidth:2
   });
 
-  this.textCreator = new TextCreator(300)
-  this.scene.add(this.text.createTextParticles("yo"));
-  // this.scene.add(this.text.createDebugMesh());
-  // this.scene.add(new THREE.Mesh(new THREE.SphereGeometry(10, 20)));
+  // this.scene.add(this.text.createTextParticles("Hello"));
+
 }
 
 
@@ -57,7 +70,9 @@ G.init = function(){
 G.animate = function(){
   this.dT.value = this.clock.getDelta();
   this.timer.value += this.dT.value
+  this.controls.update()
   this.renderer.render(this.scene, this.camera);
+  this.stats.update()
   requestAnimationFrame(this.animate.bind(this));
 
 }
