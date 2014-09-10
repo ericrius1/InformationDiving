@@ -42,7 +42,9 @@ G.init = function(){
 }
 
 G.animate = function(){
-  console.log('shnur')
+  this.dT.value = this.clock.getDelta();
+  this.timer.value += this.dT.value
+
   this.renderer.render(this.scene, this.camera);
   requestAnimationFrame(this.animate.bind(this));
 
