@@ -1,3 +1,4 @@
+//Author Cabbibo
 uniform vec3 color;
 uniform sampler2D t_text;
 uniform float opacity; 

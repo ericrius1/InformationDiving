@@ -1,3 +1,4 @@
+//Author: Cabbibo
 uniform sampler2D t_to;
 uniform sampler2D t_oPos;
 uniform sampler2D t_pos;

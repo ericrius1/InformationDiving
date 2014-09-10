@@ -1,4 +1,4 @@
-
+//Author: Cabbibo
 //attribute vec3 position;
 attribute vec4 textCoord;
 attribute vec2 textOffset;
