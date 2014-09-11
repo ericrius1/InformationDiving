@@ -1,5 +1,9 @@
 var G = {}
 
+G.controlsActive = false;
+G.animating = true;
+
+
 G.texturesToLoad = [
   ['ubuntuMono', 'img/ubuntuMono.png']
 ]
@@ -20,14 +24,21 @@ G.h = window.innerHeight;
 G.ratio = G.w / G.h;
 G.position = new THREE.Vector3()
 G.windowSize = new THREE.Vector2(G.w, G.h);
-G.camera = new THREE.PerspectiveCamera(45, G.w / G.h, 1, 10000);
+G.camera = new THREE.PerspectiveCamera(45, G.w / G.h, 1, 20000);
 G.camera.position.z = 50
 G.scene = new THREE.Scene();
 G.renderer = new THREE.WebGLRenderer();
 G.clock = new THREE.Clock();
-// G.controls = new THREE.OrbitControls(G.camera);
+G.bloom = 0.1
+
+if(G.controlsActive){
+  G.controls = new THREE.OrbitControls(G.camera, G.renderer.domElement);
+}
+
 G.stats = new Stats();
-G.gui = new dat.GUI();
+G.gui = new dat.GUI({autoplace: false});
+G.guiContainer = document.getElementById('GUI');
+G.guiContainer.appendChild(G.gui.domElement);
 G.rf = THREE.Math.randFloat;
 
 // Align top-left
@@ -40,7 +51,7 @@ G.container = document.getElementById('container');
 //POST PROCESSING
 G.renderer.autoClear = false;
 G.renderModel = new THREE.RenderPass(G.scene, G.camera);
-G.effectBloom = new THREE.BloomPass(1);
+G.effectBloom = new THREE.BloomPass(G.bloom);
 G.effectCopy = new THREE.ShaderPass(THREE.CopyShader);
 G.effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
 G.effectFXAA.uniforms['resolution'].value.set(1 / G.w, 1 / G.h);
@@ -75,6 +86,17 @@ G.startArray = [];
 
 G.init = function() {
 
+  G.splineCamera = new SplineCamera()
+
+  //GROUND
+  // var radius = 1000
+  // var groundGeo = new THREE.SphereGeometry(radius, 64, 64);
+  // var groundMat = new THREE.MeshNormalMaterial();
+  // var ground = new THREE.Mesh(groundGeo, groundMat)
+  // ground.position.y = -radius - 10
+  // ground.rotation.x = Math.PI/2
+  // G.scene.add(ground);
+  // G.controls.target = ground.position;
 
   G.lines = new Lines()
 
@@ -91,34 +113,34 @@ G.init = function() {
     offset: {
       type: 'f',
       // value: 2111
-      value: 2111
+      value: 1777
     },
     exponent: {
       type: 'f',
-      value: 0.13
+      value: 0.2
     }
   }
-  var skyGeo = new THREE.SphereGeometry(4000, 64, 64);
-  var skyMat = new THREE.ShaderMaterial({
-    vertexShader: this.shaders.vs.sky,
-    fragmentShader: this.shaders.fs.sky,
-    uniforms: {
-      topColor: {
-        type: 'c',
-        value: new THREE.Color(0x000000)
-      },
-      bottomColor: {
-        type: 'c',
-        value: new THREE.Color(0x55072f)
-      },
-      offset: skyParams.offset,
-      exponent: skyParams.exponent
+  // var skyGeo = new THREE.SphereGeometry(4000, 32, 32);
+  // var skyMat = new THREE.ShaderMaterial({
+  //   vertexShader: this.shaders.vs.sky,
+  //   fragmentShader: this.shaders.fs.sky,
+  //   uniforms: {
+  //     topColor: {
+  //       type: 'c',
+  //       value: new THREE.Color(0x000000)
+  //     },
+  //     bottomColor: {
+  //       type: 'c',
+  //       value: new THREE.Color(0x55072f)
+  //     },
+  //     offset: skyParams.offset,
+  //     exponent: skyParams.exponent
 
-    },
-    side: THREE.BackSide
-  });
-  var sky = new THREE.Mesh(skyGeo, skyMat);
-  G.scene.add(sky)
+  //   },
+  //   side: THREE.BackSide
+  // });
+  // var sky = new THREE.Mesh(skyGeo, skyMat);
+  // G.scene.add(sky)
 
   var skyGui = G.gui.addFolder('Sky Params');
   skyGui.add(skyParams.offset, 'value').name('offset');
@@ -133,9 +155,15 @@ G.init = function() {
 G.animate = function() {
   this.dT.value = this.clock.getDelta();
   this.timer.value += this.dT.value
-  // this.controls.update()
+  if(this.controlsActive){
+    this.controls.update()
+  }else{
+    this.camera.position.z -= .05
+    this.camera.position.x -= .05
+  }
+
   this.stats.update()
-  this.camera.position.z -= .1
+  this.lines.update()
   requestAnimationFrame(this.animate.bind(this));
   G.renderer.clear();
   G.composer.render();

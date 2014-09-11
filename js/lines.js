@@ -5,15 +5,17 @@ function Lines() {
   var curVertexIndex = 0;
   var curStrandIndex = 0;
   var curColor = _.sample(colorPalette);
+  var activeAttribute;
 
 
   // var material = new THREE.LineBasicMaterial({
   //   vertexColors: THREE.VertexColors,
   //   linewidth: 2,
   // });
-  for (var i = 0; i < 100; i++) {
+  var strand;
+  for (var i = 0; i < 1000; i++) {
 
-    var strand = createStrand()
+    strand = createStrand()
     strand.scale.set(G.rf(10, 20), G.rf(40, 50), 1)
     strand.position.z = -i * 5
     strand.position.y = strand.scale.y - 10;
@@ -21,7 +23,7 @@ function Lines() {
     strands.push(strand);
 
   }
-  // growLine();
+  activeAttribute = strands[0].material.attributes;
 
 
 
@@ -35,15 +37,19 @@ function Lines() {
       },
       vertexShader: G.shaders.vs.strand,
       fragmentShader: G.shaders.fs.strand,
-      transparent: true
+      transparent: true,
+      // blending: THREE.AdditiveBlending,
+      linewidth: 1.4,
+      depthTest: false,
+      depthWrite: false
     });
     var strandGeometry = new THREE.Geometry();
     var colors = [];
-    var points = createPoints(100);
+    var points = createPoints(50);
     var opacity = strandMaterial.attributes.opacity.value;
     for (var i = 0; i < points.length; i++) {
       strandGeometry.vertices.push(points[i]);
-      opacity[i] = 0.5;
+      opacity[i] = 0.0;
     }
     strandGeometry.dynamic = false;
 
@@ -63,23 +69,20 @@ function Lines() {
     return points;
   }
 
-  function growLine() {
+  this.update = function() {
     if(curStrandIndex === strands.length){
       return;
     }
 
-    strands[curStrandIndex].geometry.colors[curVertexIndex++].setHex(curColor)
+    activeAttribute.opacity.value[curVertexIndex++] = 1.0;
+    activeAttribute.opacity.needsUpdate = true;
     
     //Were done growing this strand, move onto the next one
     if (curVertexIndex === strand.geometry.vertices.length) {
       curVertexIndex = 0;
-      curColor = _.sample(colorPalette);
-      curStrandIndex++;
+      activeAttribute = strands[++curStrandIndex].material.attributes;
     }
     strands[curStrandIndex].geometry.colorsNeedUpdate = true;
-    setTimeout(function() {
-      growLine()
-    }, 10);
   }
 
 
