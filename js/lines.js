@@ -9,7 +9,7 @@ function Lines() {
 
   var material = new THREE.LineBasicMaterial({
     vertexColors: THREE.VertexColors,
-    linewidth: 2
+    linewidth: 2,
   });
   for (var i = 0; i < 100; i++) {
     var strand = new THREE.Line(createStrandGeometry(), material);
