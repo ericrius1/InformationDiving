@@ -157,9 +157,6 @@ G.animate = function() {
   this.timer.value += this.dT.value
   if(this.controlsActive){
     this.controls.update()
-  }else{
-    this.camera.position.z -= .05
-    this.camera.position.x -= .05
   }
 
   this.stats.update()
