@@ -25,7 +25,7 @@ G.camera.position.z = 50
 G.scene = new THREE.Scene();
 G.renderer = new THREE.WebGLRenderer();
 G.clock = new THREE.Clock();
-G.controls = new THREE.OrbitControls(G.camera);
+// G.controls = new THREE.OrbitControls(G.camera);
 G.stats = new Stats();
 G.rf = THREE.Math.randFloat;
 
@@ -85,8 +85,9 @@ G.init = function(){
 G.animate = function(){
   this.dT.value = this.clock.getDelta();
   this.timer.value += this.dT.value
-  this.controls.update()
+  // this.controls.update()
   this.stats.update()
+  this.camera.position.z -= .1
   requestAnimationFrame(this.animate.bind(this));
   G.renderer.clear();
   G.composer.render();
