@@ -53,7 +53,6 @@ G.composer.addPass(G.effectBloom);
 G.composer.addPass(G.effectCopy);
 
 
-G.lines = new Lines()
 
 G.dT = {
   type: 'f',
@@ -77,6 +76,7 @@ G.startArray = [];
 G.init = function() {
 
 
+  G.lines = new Lines()
 
   this.text = new TextParticles({
     vertexShader: this.shaders.vs.text,

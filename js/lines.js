@@ -7,12 +7,13 @@ function Lines() {
   var curColor = _.sample(colorPalette);
 
 
-  var material = new THREE.LineBasicMaterial({
-    vertexColors: THREE.VertexColors,
-    linewidth: 2,
-  });
+  // var material = new THREE.LineBasicMaterial({
+  //   vertexColors: THREE.VertexColors,
+  //   linewidth: 2,
+  // });
   for (var i = 0; i < 100; i++) {
-    var strand = new THREE.Line(createStrandGeometry(), material);
+
+    var strand = createStrand()
     strand.scale.set(G.rf(10, 20), G.rf(40, 50), 1)
     strand.position.z = -i * 5
     strand.position.y = strand.scale.y - 10;
@@ -20,25 +21,33 @@ function Lines() {
     strands.push(strand);
 
   }
-  growLine();
+  // growLine();
 
 
 
-  function createStrandGeometry() {
+  function createStrand() {
+    var strandMaterial = new THREE.ShaderMaterial({
+      uniforms:{
+        color: {type: 'c', value: new THREE.Color(_.sample(colorPalette))}
+      },
+      attributes: {
+        opacity: {type: 'f', value : []}
+      },
+      vertexShader: G.shaders.vs.strand,
+      fragmentShader: G.shaders.fs.strand,
+      transparent: true
+    });
     var strandGeometry = new THREE.Geometry();
     var colors = [];
     var points = createPoints(100);
-
+    var opacity = strandMaterial.attributes.opacity.value;
     for (var i = 0; i < points.length; i++) {
       strandGeometry.vertices.push(points[i]);
-      color = new THREE.Color(0x000000);
-      colors.push(color)
-
+      opacity[i] = 0.5;
     }
-    strandGeometry.colors = colors;
-
     strandGeometry.dynamic = false;
-    return strandGeometry;
+
+    return new THREE.Line(strandGeometry, strandMaterial);
 
   }
 
