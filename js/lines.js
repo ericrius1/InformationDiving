@@ -2,20 +2,25 @@ function Lines(){
 
 
   this.strandGeometry = new THREE.Geometry();
-  var points = createPoints(30)
+  var points = createPoints(50)
   for(var i = 0; i < points.length; i++){
     this.strandGeometry.vertices.push(points[i]);
   }
 
-  material = new THREE.LineBasicMaterial({
-    vertexColors: THREE.VertexColors,
-    // lineWidth: 2
-  });
+  this.strandGeometry.dynamic = false;
+  console.log(this.strandGeometry.dynamic)
 
 
-  for(var i = 0; i < 2000; i++){
-    var line = new THREE.Line(this.strandGeometry);
-    line.position.x = G.rf(-20, 20)
+
+  for(var i = 0; i < 2; i++){
+   var material = new THREE.LineBasicMaterial({
+      color: new THREE.Color().setHSL(G.rf(0,1), 1.0, 0.8),
+      linewidth: 3
+    });
+    var line = new THREE.Line(this.strandGeometry, material);
+    line.position.x = i * 20
+    line.position.y = i * 10
+    line.position.z = -i * 10
     G.scene.add(line);
     
   }
