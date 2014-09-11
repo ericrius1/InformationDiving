@@ -39,7 +39,7 @@ G.container = document.getElementById('container');
 //POST PROCESSING
 G.renderer.autoClear = false;
 G.renderModel = new THREE.RenderPass(G.scene, G.camera);
-G.effectBloom = new THREE.BloomPass(1.3 + 1);
+G.effectBloom = new THREE.BloomPass(1);
 G.effectCopy = new THREE.ShaderPass(THREE.CopyShader);
 G.effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
 G.effectFXAA.uniforms['resolution'].value.set(1/G.w, 1/G.h);

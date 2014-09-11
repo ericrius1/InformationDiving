@@ -1,8 +1,8 @@
 function Lines(){
 
-
+  var colorPalette = [0xfeee40, 0x17a1d2, 0xf22a5b];
   this.strandGeometry = new THREE.Geometry();
-  var points = createPoints(50)
+  var points = createPoints(100)
   for(var i = 0; i < points.length; i++){
     this.strandGeometry.vertices.push(points[i]);
   }
@@ -12,15 +12,15 @@ function Lines(){
 
 
 
-  for(var i = 0; i < 2; i++){
+  for(var i = 0; i < 100; i++){
    var material = new THREE.LineBasicMaterial({
-      color: new THREE.Color().setHSL(G.rf(0,1), 1.0, 0.8),
-      linewidth: 3
+      color: new THREE.Color(_.sample(colorPalette)),
+      linewidth: 2
     });
     var line = new THREE.Line(this.strandGeometry, material);
-    line.position.x = i * 20
-    line.position.y = i * 10
-    line.position.z = -i * 10
+    line.scale.set(G.rf(10, 20), G.rf(10, 50), 1)
+    line.position.set(G.rf(-100, 100), 0, G.rf(-10, 10))
+    line.position.y = line.scale.y- 10;
     G.scene.add(line);
     
   }
