@@ -1,6 +1,6 @@
 var G = {}
 
-G.controlsActive = false;
+G.controlsActive = true;
 G.animating = true;
 
 
@@ -22,14 +22,15 @@ G.loader.onStart = function() {
 G.w = window.innerWidth;
 G.h = window.innerHeight;
 G.ratio = G.w / G.h;
+G.scene = new THREE.Scene();
 G.position = new THREE.Vector3()
 G.windowSize = new THREE.Vector2(G.w, G.h);
 G.camera = new THREE.PerspectiveCamera(45, G.w / G.h, 1, 20000);
+G.cameraAnimator= new CameraAnimator()
 G.camera.position.z = 50
-G.scene = new THREE.Scene();
 G.renderer = new THREE.WebGLRenderer();
 G.clock = new THREE.Clock();
-G.bloom = 0.1
+G.bloom = .1
 
 if(G.controlsActive){
   G.controls = new THREE.OrbitControls(G.camera, G.renderer.domElement);
@@ -50,7 +51,7 @@ document.body.appendChild(G.stats.domElement);
 G.container = document.getElementById('container');
 //POST PROCESSING
 G.renderer.autoClear = false;
-G.renderModel = new THREE.RenderPass(G.scene, G.camera);
+G.renderModel = new THREE.RenderPass(G.scene, G.animating === false  ? G.splineCamera : G.camera);
 G.effectBloom = new THREE.BloomPass(G.bloom);
 G.effectCopy = new THREE.ShaderPass(THREE.CopyShader);
 G.effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
@@ -86,7 +87,7 @@ G.startArray = [];
 
 G.init = function() {
 
-  G.splineCamera = new SplineCamera()
+
 
   //GROUND
   // var radius = 1000
@@ -158,6 +159,7 @@ G.animate = function() {
   if(this.controlsActive){
     this.controls.update()
   }
+  // G.cameraAnimator.update()
 
   this.stats.update()
   this.lines.update()
