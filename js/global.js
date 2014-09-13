@@ -1,7 +1,13 @@
 var G = {}
 
 G.controlsActive = true;
+G.animating = false;
+
+G.controlsActive = false;
 G.animating = true;
+
+
+G.bloom = .1
 
 
 G.texturesToLoad = [
@@ -30,7 +36,6 @@ G.cameraAnimator= new CameraAnimator()
 G.camera.position.z = 50
 G.renderer = new THREE.WebGLRenderer();
 G.clock = new THREE.Clock();
-G.bloom = .1
 
 if(G.controlsActive){
   G.controls = new THREE.OrbitControls(G.camera, G.renderer.domElement);
@@ -51,7 +56,7 @@ document.body.appendChild(G.stats.domElement);
 G.container = document.getElementById('container');
 //POST PROCESSING
 G.renderer.autoClear = false;
-G.renderModel = new THREE.RenderPass(G.scene, G.animating === false  ? G.splineCamera : G.camera);
+G.renderModel = new THREE.RenderPass(G.scene, G.animating === true  ? G.splineCamera : G.camera);
 G.effectBloom = new THREE.BloomPass(G.bloom);
 G.effectCopy = new THREE.ShaderPass(THREE.CopyShader);
 G.effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
@@ -159,7 +164,7 @@ G.animate = function() {
   if(this.controlsActive){
     this.controls.update()
   }
-  // G.cameraAnimator.update()
+  G.cameraAnimator.update()
 
   this.stats.update()
   this.lines.update()

@@ -39,7 +39,7 @@ function Lines() {
       fragmentShader: G.shaders.fs.strand,
       transparent: true,
       // blending: THREE.AdditiveBlending,
-      linewidth: 1.4,
+      linewidth: 2.4,
       depthTest: false,
       depthWrite: false
     });
