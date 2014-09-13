@@ -3,8 +3,8 @@ var G = {}
 G.controlsActive = true;
 G.animating = false;
 
-// G.controlsActive = false;
-// G.animating = true;
+G.controlsActive = false;
+G.animating = true;
 
 
 G.bloom = .1
@@ -33,7 +33,7 @@ G.position = new THREE.Vector3()
 G.windowSize = new THREE.Vector2(G.w, G.h);
 G.camera = new THREE.PerspectiveCamera(45, G.w / G.h, 1, 20000);
 G.cameraAnimator= new CameraAnimator()
-G.camera.position.z = 50
+G.camera.position.z = 1500
 G.renderer = new THREE.WebGLRenderer();
 G.clock = new THREE.Clock();
 
