@@ -3,8 +3,8 @@ var G = {}
 G.controlsActive = true;
 G.animating = false;
 
-G.controlsActive = false;
-G.animating = true;
+// G.controlsActive = false;
+// G.animating = true;
 
 
 G.bloom = .1

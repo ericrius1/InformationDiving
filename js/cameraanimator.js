@@ -1,5 +1,7 @@
 function CameraAnimator() {
   var parent = new THREE.Object3D();
+  var sphereRadius = 1000
+  var ringRadius = 1010;
   var lookAhead = true;
   var scale = 2;
   var looptime = 20;
@@ -19,42 +21,21 @@ function CameraAnimator() {
   var pathGeo;
 
   createCameraPath()
+  createSphere();
+
+  function createSphere(){
+    var radius = 1000
+    var sphereGeo = new THREE.SphereGeometry(sphereRadius, 32, 32);
+    var sphereMat = new THREE.MeshNormalMaterial();
+    var sphere = new THREE.Mesh(sphereGeo, sphereMat);
+    G.scene.add(sphere)
+  }
 
   cameraHelper = new THREE.CameraHelper(G.splineCamera);
   cameraHelper.visible = false;
   G.scene.add(cameraHelper);
 
-  function createCameraPath() {
-    var points = []
-    var pathRadius = 100
-    var numSegments = 1000;
-    for(var i = 0; i < numSegments; i++){
-      var theta = i/numSegments * Math.PI * 2
-      var x = pathRadius * Math.cos(theta)
-      var z = pathRadius * Math.sin(theta)
-      points.push(new THREE.Vector3(x, 0, z))
 
-    }
-    var extrudePath = new THREE.SplineCurve3(points);
-
-    //path, segments, radius, radialSegments, closed
-    pathGeo = new THREE.TubeGeometry(extrudePath, 1000, 2, 12, true);
-    console.log('vertices', pathGeo.vertices.length)
-    var pathMat = new THREE.MeshNormalMaterial({
-      transparent: true,
-      opacity: .1
-    })
-    var pathMesh = new THREE.Mesh(pathGeo, pathMat);
-
-    //not sure why but looks like I need to rotate parent on z-axis
-    //to keep camera from going upside down... ****
-    parent.rotation.z = Math.PI
-    pathMesh.scale.set(scale, 0.01, scale);
-    parent.rotation.x = -.2;
-    parent.add(pathMesh);
-
-
-  }
 
   this.update = function() {
 
@@ -98,6 +79,37 @@ function CameraAnimator() {
     G.splineCamera.rotation.setFromRotationMatrix(G.splineCamera.matrix, G.splineCamera.rotation.order);
 
     cameraHelper.update();
+
+  }
+
+  function createCameraPath() {
+    var points = []
+    var numSegments = 1000;
+    for (var i = 0; i < numSegments; i++) {
+      var theta = i / numSegments * Math.PI * 2
+      var x = ringRadius * Math.cos(theta)
+      var z = ringRadius * Math.sin(theta)
+      points.push(new THREE.Vector3(x, 0, z))
+
+    }
+    var extrudePath = new THREE.SplineCurve3(points);
+
+    //path, segments, radius, radialSegments, closed
+    pathGeo = new THREE.TubeGeometry(extrudePath, 1000, 2, 12, true);
+    console.log('vertices', pathGeo.vertices.length)
+    var pathMat = new THREE.MeshNormalMaterial({
+      transparent: true,
+      opacity: .5
+    })
+    var pathMesh = new THREE.Mesh(pathGeo, pathMat);
+
+    //not sure why but looks like I need to rotate parent on z-axis
+    //to keep camera from going upside down... ****
+    parent.rotation.z = Math.PI
+    pathMesh.scale.set(scale, 0.01, scale);
+    parent.rotation.x = -.2;
+    parent.add(pathMesh);
+
 
   }
 
