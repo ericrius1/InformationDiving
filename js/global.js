@@ -1,7 +1,7 @@
 var G = {}
 
-G.controlsActive = true;
-G.animating = false;
+// G.controlsActive = true;
+// G.animating = false;
 
 G.controlsActive = false;
 G.animating = true;
@@ -36,6 +36,8 @@ G.cameraAnimator= new CameraAnimator()
 G.camera.position.z = 1500
 G.renderer = new THREE.WebGLRenderer();
 G.clock = new THREE.Clock();
+G.looptime = 200
+G.time = G.clock.getElapsedTime()
 
 if(G.controlsActive){
   G.controls = new THREE.OrbitControls(G.camera, G.renderer.domElement);
@@ -159,15 +161,17 @@ G.init = function() {
 
 
 G.animate = function() {
+  this.time = this.clock.getElapsedTime();
+  var t = (this.time % this.looptime) / this.looptime;
   this.dT.value = this.clock.getDelta();
   this.timer.value += this.dT.value
   if(this.controlsActive){
     this.controls.update()
   }
-  G.cameraAnimator.update()
+  G.cameraAnimator.update(t)
+  this.lines.update(t)
 
   this.stats.update()
-  this.lines.update()
   requestAnimationFrame(this.animate.bind(this));
   G.renderer.clear();
   G.composer.render();
