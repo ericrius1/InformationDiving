@@ -49,8 +49,12 @@ function Lines() {
     curve.v2 = pos2a;
     for(var j = 0; j < SUBDIVISIONS; j++){
       geometry.vertices.push(curve.getPoint(j/SUBDIVISIONS))
+      geometry.colors.push(new THREE.Color().setHex(0xff00ff))
     }
-    var line = new THREE.Line(geometry)
+    var mat = new THREE.LineBasicMaterial({
+      vertexColors: THREE.VertexColors
+    })
+    var line = new THREE.Line(geometry, mat)
     G.scene.add(line)
 
 
