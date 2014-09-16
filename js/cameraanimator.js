@@ -9,7 +9,7 @@ function CameraAnimator() {
   var zRotateFactor = 0
   var pathMesh;
   // parent.position.y = 100;
-  G.splineCamera = new THREE.PerspectiveCamera(40, G.w / G.h, 0.01, 10000);
+  G.splineCamera = new THREE.PerspectiveCamera(45, G.w / G.h, 0.01, 10000);
   G.splineCamera.rotation.order = 'YXZ';
 
   parent.add(G.splineCamera);
@@ -95,7 +95,7 @@ function CameraAnimator() {
       // side: THREE.DoubleSide
     })
     pathMesh = new THREE.Mesh(G.pathGeo, pathMat);
-    pathMesh.scale.y = 0.01
+    // pathMesh.scale.y = 0.01
     //not sure why but looks like I need to rotate parent on z-axis
     //to keep camera from going upside down... ****
     pathMesh.visible = false;
@@ -108,7 +108,7 @@ function CameraAnimator() {
     var sphereMat = new THREE.MeshNormalMaterial({
       // wireframe: true
       transparent: true,
-      opacity: 0.3
+      opacity: 0.11
     });
     var sphere = new THREE.Mesh(sphereGeo, sphereMat);
     // sphere.visible = false

@@ -7,7 +7,6 @@ function Lines() {
   var strands = []
   var curVertexIndex = 0;
   var curStrandIndex = 0;
-  var count = 0
 
 
   // var material = new THREE.LineBasicMaterial({
@@ -16,7 +15,8 @@ function Lines() {
 
   setTimeout(function(){
     createStrand() 
-  }, G.loopTime)
+
+  }, G.looptime)
 
   function createStrand(){
     //get cam direction
@@ -64,20 +64,26 @@ function Lines() {
     G.scene.add(strand)
     strand.material.attributes.opacity.needsUpdate = true
 
-    //To keep things simple, lets grow the st immediately upon creation. 
+    //To keep things simple, lets grow the strand immediately upon creation. 
     growStrand(strand, 0)
 
-    count++
-
+    if(Math.random() < 0.2){
+      var text = G.text.createTextParticles(  (G.rf(4, 23) + '').substring(0, 4))
+      text.position.copy(pos);
+      text.rotation.copy(G.splineCamera.rotation)
+      text.position.y -= G.rf(0, 14)
+      G.scene.add(text);
+    }
 
 
 
     setTimeout(function(){
       createStrand()
-    }, 500)
+    }, G.looptime)
 
 
   }
+
 
   function growStrand(strand, vertexIndex){
     var opacity = strand.material.attributes.opacity;

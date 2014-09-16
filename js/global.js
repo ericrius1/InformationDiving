@@ -100,9 +100,9 @@ G.init = function() {
   this.text = new TextParticles({
     vertexShader: this.shaders.vs.text,
     fragmentShader: this.shaders.fs.text,
-    lineLength: 120,
-    lineHeight: 2,
-    letterWidth: 2
+    lineLength: 50,
+    lineHeight: 1,
+    letterWidth: 1
   });
 
   //Skydome
