@@ -87,7 +87,6 @@ function Lines() {
 
   function growStrand(strand, vertexIndex){
     var opacity = strand.material.attributes.opacity;
-    console.log(opacity.value[vertexIndex])
     opacity.value[vertexIndex++] = 1;
     opacity.needsUpdate = true
     if(vertexIndex === opacity.value.length)return

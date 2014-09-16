@@ -106,9 +106,10 @@ function CameraAnimator() {
   function createSphere(){
     var sphereGeo = new THREE.SphereGeometry(G.sphereRadius, 128, 128);
     var sphereMat = new THREE.MeshNormalMaterial({
-      // wireframe: true
+      wireframe: true,
       transparent: true,
-      opacity: 0.11
+      linewidth: 4,
+      opacity: 0.5
     });
     var sphere = new THREE.Mesh(sphereGeo, sphereMat);
     // sphere.visible = false

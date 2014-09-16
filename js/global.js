@@ -8,7 +8,7 @@ G.animating = true;
 
 G.looptime = 500
 
-G.bloom = 1.1
+G.bloom = 3.1
 
 
 G.texturesToLoad = [
@@ -39,12 +39,14 @@ G.renderer = new THREE.WebGLRenderer();
 G.clock = new THREE.Clock();
 G.time = G.clock.getElapsedTime()
 
-if(G.controlsActive){
+if (G.controlsActive) {
   G.controls = new THREE.OrbitControls(G.camera, G.renderer.domElement);
 }
 
 G.stats = new Stats();
-G.gui = new dat.GUI({autoplace: false});
+G.gui = new dat.GUI({
+  autoplace: false
+});
 G.guiContainer = document.getElementById('GUI');
 G.guiContainer.appendChild(G.gui.domElement);
 G.rf = THREE.Math.randFloat;
@@ -57,9 +59,18 @@ G.stats.domElement.style.top = '0px';
 document.body.appendChild(G.stats.domElement);
 G.container = document.getElementById('container');
 //POST PROCESSING
+var postGui = G.gui.addFolder('PostProcessing');
+var postParams = {
+  blur: 1.1
+}
+postGui.add(postParams, 'blur').name('blur').onChange(function(){
+  console.log('dhd');
+  G.effectBloom.copyUniforms.opacity.value = postParams.blur;
+
+});
 G.renderer.autoClear = false;
-G.renderModel = new THREE.RenderPass(G.scene, G.animating === true  ? G.splineCamera : G.camera);
-G.effectBloom = new THREE.BloomPass(G.bloom);
+G.renderModel = new THREE.RenderPass(G.scene, G.animating === true ? G.splineCamera : G.camera);
+G.effectBloom = new THREE.BloomPass(postParams.blur);
 G.effectCopy = new THREE.ShaderPass(THREE.CopyShader);
 G.effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
 G.effectFXAA.uniforms['resolution'].value.set(1 / G.w, 1 / G.h);
@@ -139,10 +150,11 @@ G.init = function() {
 
 
   var sky = new THREE.Mesh(skyGeo, skyMat);
-  sky.rotation.x = Math.PI/2
+  sky.rotation.x = Math.PI / 2
   G.scene.add(sky)
 
   var skyGui = G.gui.addFolder('Sky Params');
+
   skyGui.add(skyParams.offset, 'value').name('offset');
   skyGui.add(skyParams.exponent, 'value').name('exponent');
 
@@ -157,7 +169,7 @@ G.animate = function() {
   var t = (this.time % this.looptime) / this.looptime;
   this.dT.value = this.clock.getDelta();
   this.timer.value += this.dT.value
-  if(this.controlsActive){
+  if (this.controlsActive) {
     this.controls.update()
   }
   G.cameraAnimator.update(t)
