@@ -11,20 +11,8 @@ function Lines() {
 
   // var material = new THREE.LineBasicMaterial({
   //   vertexColors: THREE.VertexColors,
-  //   linewidth: 2,
-  // });
-  var strand;
-  for (var i = 0; i < 1000; i++) {
 
-    strand = createStrand()
-    strand.scale.set(G.rf(10, 20), G.rf(40, 50), 1)
-    strand.position.z = -i * 5
-    strand.position.y = strand.scale.y - 10;
-    G.scene.add(strand);
-    strands.push(strand);
-
-  }
-  activeAttribute = strands[0].material.attributes;
+  // activeAttribute = strands[0].material.attributes;
 
   setTimeout(function(){
     drawStrands() 
@@ -39,20 +27,29 @@ function Lines() {
     lineMat = new THREE.LineBasicMaterial({
 
     })
-    var pos1 = new THREE.Vector3(pos.x, pos.y + 50, pos.z)
-    var pos2 = new THREE.Vector3(pos.x, pos.y - 50, pos.z)
-    var dirVec1 = new THREE.Vector3().sub(pos1).normalize().multiplyScalar(50)
-    var dirVec2 = new THREE.Vector3().sub(pos2).normalize().multiplyScalar(50)
-    // lineGeo.vertices.push(G.splineCamera.position.clone(), pos)
+    var dir = new THREE.Vector3().add(pos)
+    var newPos = new THREE.Vector3().addVectors(dir, pos).normalize().multiplyScalar(1110)
+    var pos1 = new THREE.Vector3(pos.x, pos.y - 50, pos.z)
+    var pos2 = new THREE.Vector3(pos.x, pos.y + 50, pos.z)
+    var dirVec1 = new THREE.Vector3().sub(pos1).normalize().multiplyScalar(100)
+    var dirVec2 = new THREE.Vector3().sub(pos2).normalize().multiplyScalar(100)
 
     var pos1a = new THREE.Vector3().addVectors(pos1, dirVec1)
-    var pos2a = new THREE.Vector3().addVectors(pos2, dirVec1)
-    console.log(pos1a)
-    lineGeo.vertices.push(pos1, pos1a)
-    lineGeo.vertices.push(pos2, pos2a)
-    line = new THREE.Line(lineGeo)
-    line.type = THREE.LinePieces;
+    var pos2a = new THREE.Vector3().addVectors(pos2, dirVec2)
+    var SUBDIVISIONS = 200;
+    var geometry = new THREE.Geometry()
+    var curve = new THREE.QuadraticBezierCurve3();
+
+    curve.v0 = pos1a;
+    curve.v1 = newPos;
+    curve.v2 = pos2a;
+    for(var j = 0; j < SUBDIVISIONS; j++){
+      geometry.vertices.push(curve.getPoint(j/SUBDIVISIONS))
+    }
+    var line = new THREE.Line(geometry)
     G.scene.add(line)
+
+
 
 
     setTimeout(function(){
@@ -62,47 +59,6 @@ function Lines() {
 
   }
 
-  function createStrand() {
-    var strandMaterial = new THREE.ShaderMaterial({
-      uniforms:{
-        color: {type: 'c', value: new THREE.Color(_.sample(colorPalette))}
-      },
-      attributes: {
-        opacity: {type: 'f', value : []}
-      },
-      vertexShader: G.shaders.vs.strand,
-      fragmentShader: G.shaders.fs.strand,
-      transparent: true,
-      // blending: THREE.AdditiveBlending,
-      linewidth: 2.4,
-      depthTest: false,
-      depthWrite: false
-    });
-    var strandGeometry = new THREE.Geometry();
-    var colors = [];
-    var points = createPoints(50);
-    var opacity = strandMaterial.attributes.opacity.value;
-    for (var i = 0; i < points.length; i++) {
-      strandGeometry.vertices.push(points[i]);
-      opacity[i] = 0.0;
-    }
-    strandGeometry.dynamic = false;
-
-    return new THREE.Line(strandGeometry, strandMaterial);
-
-  }
-
-  function createPoints(numPoints) {
-    var points = []
-    var range = 2;
-    var step = 2 / numPoints
-    for (var x = -1; x < 1; x += step) {
-      var y = -Math.pow(x, 2);
-      points.push(new THREE.Vector3(x, y, 0));
-    }
-
-    return points;
-  }
 
   this.update = function() {
   //   if(curStrandIndex === strands.length){

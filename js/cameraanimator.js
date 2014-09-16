@@ -113,6 +113,7 @@ function CameraAnimator() {
       // wireframe: true
     });
     var sphere = new THREE.Mesh(sphereGeo, sphereMat);
+    // sphere.visible = false
     G.scene.add(sphere)
   }
 
