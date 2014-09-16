@@ -7,63 +7,85 @@ function Lines() {
   var strands = []
   var curVertexIndex = 0;
   var curStrandIndex = 0;
-  var curColor = _.sample(colorPalette);
-  var activeAttribute;
-
+  var count = 0
 
 
   // var material = new THREE.LineBasicMaterial({
   //   vertexColors: THREE.VertexColors,
 
-  // activeAttribute = strands[0].material.attributes;
 
   setTimeout(function(){
-    drawStrands() 
-  }, 1000)
+    createStrand() 
+  }, G.loopTime)
 
-  function drawStrands(){
+  function createStrand(){
     //get cam direction
     var t = (G.time % G.looptime) / G.looptime
-    var pos = G.pathGeo.parameters.path.getPointAt((t + 50 / G.pathGeo.parameters.path.getLength()) % 1)
-    var surface
-    lineGeo = new THREE.Geometry()
-    lineMat = new THREE.LineBasicMaterial({
+    var pos = G.pathGeo.parameters.path.getPointAt((t + G.rf(80, 120) / G.pathGeo.parameters.path.getLength()) % 1)
 
-    })
+    var strandMat = new THREE.ShaderMaterial({
+      uniforms: {
+        color: {type: 'c', value: new THREE.Color(_.sample(colorPalette))}
+      },
+      attributes: {
+        opacity: {type: 'f', value: []},
+      },
+      vertexShader: G.shaders.vs.strand,
+      fragmentShader: G.shaders.fs.strand,
+      transparent: true
+    });
     var dir = new THREE.Vector3().add(pos)
     var newPos = new THREE.Vector3().addVectors(dir, pos).normalize().multiplyScalar(G.ringRadius + G.rf(20, 50))
    
-    var pos1 = new THREE.Vector3(pos.x, pos.y - 10, pos.z)
-    var pos2 = new THREE.Vector3(pos.x, pos.y + 10, pos.z)
+    var pos1 = new THREE.Vector3(pos.x, pos.y - G.rf(17, 20), pos.z)
+    var pos2 = new THREE.Vector3(pos.x, pos.y + G.rf(11,15), pos.z)
     var dirVec1 = new THREE.Vector3().add(pos1)
     var dirVec2 = new THREE.Vector3().add(pos2)
     var pos1a = new THREE.Vector3().addVectors(pos1, dirVec1).normalize().multiplyScalar(G.sphereRadius)
     var pos2a = new THREE.Vector3().addVectors(pos2, dirVec2).normalize().multiplyScalar(G.sphereRadius)
     var SUBDIVISIONS = 200;
 
-    var geometry = new THREE.Geometry()
+    var strandGeometry = new THREE.Geometry()
     var curve = new THREE.QuadraticBezierCurve3();
 
     curve.v0 = pos1a;
     curve.v1 = newPos;
     curve.v2 = pos2a;
+
+    var opacity = strandMat.attributes.opacity.value
     for(var j = 0; j < SUBDIVISIONS; j++){
-      geometry.vertices.push(curve.getPoint(j/SUBDIVISIONS))
-      geometry.colors.push(new THREE.Color().setHex(0xff00ff))
+      strandGeometry.vertices.push(curve.getPoint(j/SUBDIVISIONS))
+      opacity[j] = 0.0;
     }
-    var mat = new THREE.LineBasicMaterial({
-      vertexColors: THREE.VertexColors
-    })
-    var line = new THREE.Line(geometry, mat)
-    G.scene.add(line)
+    // strandGeometry.dynamic = false
+    var strand = new THREE.Line(strandGeometry, strandMat)
+    G.scene.add(strand)
+
+    //To keep things simple, lets grow the st immediately upon creation. 
+    growStrand(strand, 0)
+
+    count++
 
 
 
 
     setTimeout(function(){
-      drawStrands()
+      createStrand()
     }, 500)
 
+
+  }
+
+  function growStrand(strand, vertexIndex){
+    var opacity = strand.material.attributes.opacity;
+    console.log(opacity.value[vertexIndex])
+    opacity.value[vertexIndex++] = 1;
+    opacity.needsUpdate = true
+    if(vertexIndex === opacity.value.length)return
+
+    setTimeout(function(){
+      growStrand(strand, vertexIndex); 
+    }, 20)
 
   }
 

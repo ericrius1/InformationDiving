@@ -6,8 +6,9 @@ G.animating = false;
 G.controlsActive = false;
 G.animating = true;
 
+G.looptime = 500
 
-G.bloom = .1
+G.bloom = 1.1
 
 
 G.texturesToLoad = [
@@ -36,7 +37,6 @@ G.cameraAnimator= new CameraAnimator()
 G.camera.position.z = 1500
 G.renderer = new THREE.WebGLRenderer();
 G.clock = new THREE.Clock();
-G.looptime = 200
 G.time = G.clock.getElapsedTime()
 
 if(G.controlsActive){
@@ -95,17 +95,6 @@ G.startArray = [];
 G.init = function() {
 
 
-
-  //GROUND
-  // var radius = 1000
-  // var groundGeo = new THREE.SphereGeometry(radius, 64, 64);
-  // var groundMat = new THREE.MeshNormalMaterial();
-  // var ground = new THREE.Mesh(groundGeo, groundMat)
-  // ground.position.y = -radius - 10
-  // ground.rotation.x = Math.PI/2
-  // G.scene.add(ground);
-  // G.controls.target = ground.position;
-
   G.lines = new Lines()
 
   this.text = new TextParticles({
@@ -121,34 +110,37 @@ G.init = function() {
     offset: {
       type: 'f',
       // value: 2111
-      value: 1777
+      value: 1877
     },
     exponent: {
       type: 'f',
       value: 0.2
     }
   }
-  // var skyGeo = new THREE.SphereGeometry(4000, 32, 32);
-  // var skyMat = new THREE.ShaderMaterial({
-  //   vertexShader: this.shaders.vs.sky,
-  //   fragmentShader: this.shaders.fs.sky,
-  //   uniforms: {
-  //     topColor: {
-  //       type: 'c',
-  //       value: new THREE.Color(0x000000)
-  //     },
-  //     bottomColor: {
-  //       type: 'c',
-  //       value: new THREE.Color(0x55072f)
-  //     },
-  //     offset: skyParams.offset,
-  //     exponent: skyParams.exponent
+  var skyGeo = new THREE.SphereGeometry(4000, 32, 32);
+  var skyMat = new THREE.ShaderMaterial({
+    vertexShader: this.shaders.vs.sky,
+    fragmentShader: this.shaders.fs.sky,
+    uniforms: {
+      topColor: {
+        type: 'c',
+        value: new THREE.Color(0x000000)
+      },
+      bottomColor: {
+        type: 'c',
+        value: new THREE.Color(0x55072f)
+      },
+      offset: skyParams.offset,
+      exponent: skyParams.exponent
 
-  //   },
-  //   side: THREE.BackSide
-  // });
-  // var sky = new THREE.Mesh(skyGeo, skyMat);
-  // G.scene.add(sky)
+    },
+    side: THREE.BackSide
+  });
+
+
+  var sky = new THREE.Mesh(skyGeo, skyMat);
+  sky.rotation.x = Math.PI/2
+  G.scene.add(sky)
 
   var skyGui = G.gui.addFolder('Sky Params');
   skyGui.add(skyParams.offset, 'value').name('offset');

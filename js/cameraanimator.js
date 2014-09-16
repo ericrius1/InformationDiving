@@ -9,7 +9,7 @@ function CameraAnimator() {
   var zRotateFactor = 0
   var pathMesh;
   // parent.position.y = 100;
-  G.splineCamera = new THREE.PerspectiveCamera(45, G.w / G.h, 0.01, 1000);
+  G.splineCamera = new THREE.PerspectiveCamera(40, G.w / G.h, 0.01, 10000);
   G.splineCamera.rotation.order = 'YXZ';
 
   parent.add(G.splineCamera);
@@ -89,7 +89,6 @@ function CameraAnimator() {
 
     //path, segments, radius, radialSegments, closed
     G.pathGeo = new THREE.TubeGeometry(extrudePath, 1000, 2, 12, true);
-    console.log('vertices', G.pathGeo.vertices.length)
     var pathMat = new THREE.MeshNormalMaterial({
       transparent: true,
       opacity: .2,
