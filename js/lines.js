@@ -8,6 +8,7 @@ function Lines() {
   var activeAttribute;
 
 
+
   // var material = new THREE.LineBasicMaterial({
   //   vertexColors: THREE.VertexColors,
   //   linewidth: 2,
@@ -41,13 +42,14 @@ function Lines() {
     var pos1 = new THREE.Vector3(pos.x, pos.y + 50, pos.z)
     var pos2 = new THREE.Vector3(pos.x, pos.y - 50, pos.z)
     var dirVec1 = new THREE.Vector3().sub(pos1).normalize().multiplyScalar(50)
-    var dirVec2 = new THREE.Vector3().sub(pos2).normalize()
+    var dirVec2 = new THREE.Vector3().sub(pos2).normalize().multiplyScalar(50)
     // lineGeo.vertices.push(G.splineCamera.position.clone(), pos)
 
     var pos1a = new THREE.Vector3().addVectors(pos1, dirVec1)
+    var pos2a = new THREE.Vector3().addVectors(pos2, dirVec1)
     console.log(pos1a)
     lineGeo.vertices.push(pos1, pos1a)
-    lineGeo.vertices.push(pos2, dirVec2)
+    lineGeo.vertices.push(pos2, pos2a)
     line = new THREE.Line(lineGeo)
     line.type = THREE.LinePieces;
     G.scene.add(line)

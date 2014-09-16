@@ -110,7 +110,7 @@ function CameraAnimator() {
     var radius = 1000
     var sphereGeo = new THREE.SphereGeometry(sphereRadius, 128, 128);
     var sphereMat = new THREE.MeshNormalMaterial({
-      wireframe: true
+      // wireframe: true
     });
     var sphere = new THREE.Mesh(sphereGeo, sphereMat);
     G.scene.add(sphere)
