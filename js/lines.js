@@ -1,3 +1,6 @@
+
+
+
 function Lines() {
 
   var colorPalette = [0xfeee40, 0x17a1d2, 0xf22a5b, 0x9f0a5c];
@@ -21,22 +24,23 @@ function Lines() {
   function drawStrands(){
     //get cam direction
     var t = (G.time % G.looptime) / G.looptime
-    var pos = G.pathGeo.parameters.path.getPointAt((t + 30 / G.pathGeo.parameters.path.getLength()) % 1).multiplyScalar( G.ringScale );
+    var pos = G.pathGeo.parameters.path.getPointAt((t + 50 / G.pathGeo.parameters.path.getLength()) % 1)
     var surface
     lineGeo = new THREE.Geometry()
     lineMat = new THREE.LineBasicMaterial({
 
     })
     var dir = new THREE.Vector3().add(pos)
-    var newPos = new THREE.Vector3().addVectors(dir, pos).normalize().multiplyScalar(1110)
-    var pos1 = new THREE.Vector3(pos.x, pos.y - 50, pos.z)
-    var pos2 = new THREE.Vector3(pos.x, pos.y + 50, pos.z)
-    var dirVec1 = new THREE.Vector3().sub(pos1).normalize().multiplyScalar(100)
-    var dirVec2 = new THREE.Vector3().sub(pos2).normalize().multiplyScalar(100)
-
-    var pos1a = new THREE.Vector3().addVectors(pos1, dirVec1)
-    var pos2a = new THREE.Vector3().addVectors(pos2, dirVec2)
+    var newPos = new THREE.Vector3().addVectors(dir, pos).normalize().multiplyScalar(G.ringRadius + G.rf(20, 50))
+   
+    var pos1 = new THREE.Vector3(pos.x, pos.y - 10, pos.z)
+    var pos2 = new THREE.Vector3(pos.x, pos.y + 10, pos.z)
+    var dirVec1 = new THREE.Vector3().add(pos1)
+    var dirVec2 = new THREE.Vector3().add(pos2)
+    var pos1a = new THREE.Vector3().addVectors(pos1, dirVec1).normalize().multiplyScalar(G.sphereRadius)
+    var pos2a = new THREE.Vector3().addVectors(pos2, dirVec2).normalize().multiplyScalar(G.sphereRadius)
     var SUBDIVISIONS = 200;
+
     var geometry = new THREE.Geometry()
     var curve = new THREE.QuadraticBezierCurve3();
 

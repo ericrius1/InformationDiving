@@ -1,8 +1,7 @@
 function CameraAnimator() {
   var parent = new THREE.Object3D();
-  var sphereRadius = 1000
-  G.ringScale = 10
-  var ringRadius = sphereRadius/G.ringScale + 5;
+  G.sphereRadius = 1000
+  G.ringRadius = G.sphereRadius + 10
   var lookAhead = true;
   var pointIndex = 0;
   var binormal = new THREE.Vector3();
@@ -39,7 +38,7 @@ function CameraAnimator() {
     //Try animate camera along spline
 
     var pos = G.pathGeo.parameters.path.getPointAt(t);
-    pos.multiplyScalar( G.ringScale );
+
 
     //interpolation
     var segments = G.pathGeo.tangents.length;
@@ -62,7 +61,7 @@ function CameraAnimator() {
     cameraEye.position.copy(pos);
 
     //Use arclength for stabilization in look ahead
-    var lookAt = G.pathGeo.parameters.path.getPointAt((t + 30 / G.pathGeo.parameters.path.getLength()) % 1).multiplyScalar( G.ringScale );
+    var lookAt = G.pathGeo.parameters.path.getPointAt((t + 30 / G.pathGeo.parameters.path.getLength()) % 1)
 
     //Camera orientation 2 - up orientation via normal
     if (!lookAhead) {
@@ -81,8 +80,8 @@ function CameraAnimator() {
     var numSegments = 1000;
     for (var i = 0; i < numSegments; i++) {
       var theta = i / numSegments * Math.PI * 2
-      var x = ringRadius * Math.cos(theta)
-      var z = ringRadius * Math.sin(theta)
+      var x = G.ringRadius * Math.cos(theta)
+      var z = G.ringRadius * Math.sin(theta)
       points.push(new THREE.Vector3(x, 0, z))
 
     }
@@ -100,15 +99,13 @@ function CameraAnimator() {
     pathMesh.scale.y = 0.01
     //not sure why but looks like I need to rotate parent on z-axis
     //to keep camera from going upside down... ****
-    pathMesh.scale.set(G.ringScale, 0.01, G.ringScale);
     pathMesh.visible = true;
     parent.add(pathMesh);
 
 
   }
   function createSphere(){
-    var radius = 1000
-    var sphereGeo = new THREE.SphereGeometry(sphereRadius, 128, 128);
+    var sphereGeo = new THREE.SphereGeometry(G.sphereRadius, 128, 128);
     var sphereMat = new THREE.MeshNormalMaterial({
       // wireframe: true
     });
