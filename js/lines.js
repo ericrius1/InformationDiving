@@ -32,7 +32,9 @@ function Lines() {
       },
       vertexShader: G.shaders.vs.strand,
       fragmentShader: G.shaders.fs.strand,
-      transparent: true
+      transparent: true,
+      depthTest: false,
+      depthWrite: false
     });
     var dir = new THREE.Vector3().add(pos)
     var newPos = new THREE.Vector3().addVectors(dir, pos).normalize().multiplyScalar(G.ringRadius + G.rf(20, 50))
@@ -43,7 +45,7 @@ function Lines() {
     var dirVec2 = new THREE.Vector3().add(pos2)
     var pos1a = new THREE.Vector3().addVectors(pos1, dirVec1).normalize().multiplyScalar(G.sphereRadius)
     var pos2a = new THREE.Vector3().addVectors(pos2, dirVec2).normalize().multiplyScalar(G.sphereRadius)
-    var SUBDIVISIONS = 200;
+    var SUBDIVISIONS = 100;
 
     var strandGeometry = new THREE.Geometry()
     var curve = new THREE.QuadraticBezierCurve3();
@@ -57,9 +59,10 @@ function Lines() {
       strandGeometry.vertices.push(curve.getPoint(j/SUBDIVISIONS))
       opacity[j] = 0.0;
     }
-    // strandGeometry.dynamic = false
+    strandGeometry.dynamic = false
     var strand = new THREE.Line(strandGeometry, strandMat)
     G.scene.add(strand)
+    strand.material.attributes.opacity.needsUpdate = true
 
     //To keep things simple, lets grow the st immediately upon creation. 
     growStrand(strand, 0)
@@ -85,7 +88,7 @@ function Lines() {
 
     setTimeout(function(){
       growStrand(strand, vertexIndex); 
-    }, 20)
+    }, 30)
 
   }
 
