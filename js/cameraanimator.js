@@ -99,7 +99,7 @@ function CameraAnimator() {
     pathMesh.scale.y = 0.01
     //not sure why but looks like I need to rotate parent on z-axis
     //to keep camera from going upside down... ****
-    pathMesh.visible = true;
+    pathMesh.visible = false;
     parent.add(pathMesh);
 
 
